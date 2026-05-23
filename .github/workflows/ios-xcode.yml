@@ -16,7 +16,7 @@ on:
 env:
   XCODE_PROJECT: LeafDoctorAI.xcodeproj
   XCODE_SCHEME: LeafDoctorAI
-  BUNDLE_IDENTIFIER: com.leafdoctor.ai
+  BUNDLE_IDENTIFIER: com.obankole.LeafDoctorAI
 
 jobs:
   build:

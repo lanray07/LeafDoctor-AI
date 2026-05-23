@@ -55,7 +55,7 @@ Download the `.p8` file once, then base64 encode it for `ASC_API_KEY_BASE64`.
 The TestFlight workflow expects:
 
 - Apple Distribution certificate exported as `.p12`
-- App Store provisioning profile for bundle ID `com.leafdoctor.ai`
+- App Store provisioning profile for bundle ID `com.obankole.LeafDoctorAI`
 - The same Apple Team ID used by the App Store Connect app
 
 The simulator build does not require any of these secrets.

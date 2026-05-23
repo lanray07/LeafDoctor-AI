@@ -489,7 +489,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.leafdoctor.ai;
+				PRODUCT_BUNDLE_IDENTIFIER = com.obankole.LeafDoctorAI;
 				PRODUCT_NAME = "LeafDoctor AI";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -516,7 +516,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.leafdoctor.ai;
+				PRODUCT_BUNDLE_IDENTIFIER = com.obankole.LeafDoctorAI;
 				PRODUCT_NAME = "LeafDoctor AI";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
