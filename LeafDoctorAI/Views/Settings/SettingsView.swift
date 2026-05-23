@@ -14,7 +14,7 @@ struct SettingsView: View {
     @AppStorage("settingsReminderPreference") private var reminderPreference = ReminderPreference.balanced.rawValue
     @State private var showingPaywall = false
     @State private var showingDeleteConfirmation = false
-    @State private var exportedURL: URL?
+    @State private var exportedFile: ExportedFile?
     @State private var message: String?
 
     var body: some View {
@@ -88,8 +88,8 @@ struct SettingsView: View {
         .sheet(isPresented: $showingPaywall) {
             PaywallView()
         }
-        .sheet(item: $exportedURL) { url in
-            ShareSheet(items: [url])
+        .sheet(item: $exportedFile) { file in
+            ShareSheet(items: [file.url])
         }
         .confirmationDialog("Delete all local data?", isPresented: $showingDeleteConfirmation, titleVisibility: .visible) {
             Button("Delete all data", role: .destructive) {
@@ -152,7 +152,7 @@ struct SettingsView: View {
             let data = try encoder.encode(payload)
             let url = FileManager.default.temporaryDirectory.appendingPathComponent("LeafDoctorAI-Export.json")
             try data.write(to: url, options: [.atomic])
-            exportedURL = url
+            exportedFile = ExportedFile(url: url)
         } catch {
             message = error.localizedDescription
         }
@@ -192,6 +192,14 @@ struct SettingsView: View {
 
         Results are not guaranteed botanical diagnosis. Treatment outcomes may vary. Severe infestations, toxic exposure concerns, crop losses, or valuable greenhouse issues should be reviewed by qualified professionals.
         """
+    }
+
+    private struct ExportedFile: Identifiable {
+        let url: URL
+
+        var id: String {
+            url.absoluteString
+        }
     }
 
     private struct ExportPayload: Encodable {

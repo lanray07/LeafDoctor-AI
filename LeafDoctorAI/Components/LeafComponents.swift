@@ -10,6 +10,15 @@ extension Color {
     static let leafDanger = Color(red: 0.80, green: 0.20, blue: 0.18)
 }
 
+extension ShapeStyle where Self == Color {
+    static var leafPrimary: Color { Color.leafPrimary }
+    static var leafDeep: Color { Color.leafDeep }
+    static var leafTeal: Color { Color.leafTeal }
+    static var leafMint: Color { Color.leafMint }
+    static var leafWarning: Color { Color.leafWarning }
+    static var leafDanger: Color { Color.leafDanger }
+}
+
 struct PlantCard: View {
     let plant: PlantProfile
     var latestScan: PlantScan?
