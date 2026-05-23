@@ -4,7 +4,7 @@ This repo includes `.github/workflows/ios-xcode.yml`.
 
 ## What Runs Automatically
 
-Every push to `main` and every pull request runs an unsigned iOS Simulator build on a GitHub-hosted macOS runner:
+Every push to `main` and every pull request runs an unsigned iOS Simulator build on a GitHub-hosted macOS 26 runner:
 
 ```bash
 xcodebuild -project LeafDoctorAI.xcodeproj -scheme LeafDoctorAI -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO clean build
