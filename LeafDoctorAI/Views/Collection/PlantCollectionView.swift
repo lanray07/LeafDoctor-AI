@@ -190,7 +190,7 @@ struct PlantDetailView: View {
     @Query private var tasks: [CareTask]
     @Query private var photos: [PlantPhoto]
     @State private var showingEditor = false
-    @State private var reportURL: URL?
+    @State private var reportItem: ShareableReport?
     @State private var reportError: String?
 
     init(plant: PlantProfile) {
@@ -256,8 +256,8 @@ struct PlantDetailView: View {
                 PlantEditorView(plant: plant)
             }
         }
-        .sheet(item: $reportURL) { url in
-            ShareSheet(items: [url])
+        .sheet(item: $reportItem) { item in
+            ShareSheet(items: [item.url])
         }
     }
 
@@ -372,18 +372,23 @@ struct PlantDetailView: View {
 
     private func createReport() {
         do {
-            reportURL = try PDFReportGenerator.makeCareReport(
+            let url = try PDFReportGenerator.makeCareReport(
                 plant: plant,
                 scans: scans,
                 tasks: tasks,
                 photos: photos
             )
+            reportItem = ShareableReport(url: url)
         } catch {
             reportError = error.localizedDescription
         }
     }
 }
 
-extension URL: Identifiable {
-    public var id: String { absoluteString }
+private struct ShareableReport: Identifiable {
+    let url: URL
+
+    var id: String {
+        url.absoluteString
+    }
 }

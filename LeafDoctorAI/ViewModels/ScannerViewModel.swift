@@ -1,10 +1,8 @@
 import Foundation
-import PhotosUI
 import UIKit
 
 @MainActor
 final class ScannerViewModel: ObservableObject {
-    @Published var selectedPickerItem: PhotosPickerItem?
     @Published var selectedImage: UIImage?
     @Published var selectedImageData: Data?
     @Published var photoCategory: PhotoCategory = .leaf
@@ -19,18 +17,13 @@ final class ScannerViewModel: ObservableObject {
         self.aiService = aiService
     }
 
-    func loadSelectedPhoto() async {
-        guard let selectedPickerItem else { return }
-
-        do {
-            if let data = try await selectedPickerItem.loadTransferable(type: Data.self),
-               let image = UIImage(data: data) {
-                selectedImageData = data
-                selectedImage = image
-            }
-        } catch {
-            errorMessage = error.localizedDescription
+    func setPickedPhotoData(_ data: Data) {
+        guard let image = UIImage(data: data) else {
+            errorMessage = "Choose a valid plant photo."
+            return
         }
+        selectedImageData = data
+        selectedImage = image
     }
 
     func setCameraImage(_ image: UIImage) {

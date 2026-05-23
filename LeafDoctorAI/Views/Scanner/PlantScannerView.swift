@@ -8,6 +8,7 @@ struct PlantScannerView: View {
     @Query(sort: \PlantProfile.createdAt, order: .reverse) private var plants: [PlantProfile]
     @StateObject private var viewModel = ScannerViewModel()
     @State private var selectedPlantID: UUID?
+    @State private var selectedPickerItem: PhotosPickerItem?
     @State private var showingCamera = false
     @State private var showingCropper = false
     @State private var savedScan: PlantScan?
@@ -42,10 +43,9 @@ struct PlantScannerView: View {
                 }
             }
         }
-        .onChange(of: viewModel.selectedPickerItem) { _, _ in
+        .onChange(of: selectedPickerItem) { _, item in
             Task {
-                await viewModel.loadSelectedPhoto()
-                showingCropper = viewModel.selectedImage != nil
+                await loadSelectedPhoto(item)
             }
         }
     }
@@ -92,7 +92,7 @@ struct PlantScannerView: View {
             }
 
             HStack {
-                PhotosPicker(selection: $viewModel.selectedPickerItem, matching: .images) {
+                PhotosPicker(selection: $selectedPickerItem, matching: .images) {
                     Label("Upload", systemImage: "photo.on.rectangle")
                         .frame(maxWidth: .infinity)
                 }
@@ -229,6 +229,23 @@ struct PlantScannerView: View {
         savedScan = scan
         selectedPlantID = plant.id
         saveMessage = "Saved scan to \(plant.plantName)."
+    }
+
+    private func loadSelectedPhoto(_ item: PhotosPickerItem?) async {
+        guard let item else { return }
+
+        do {
+            if let data = try await item.loadTransferable(type: Data.self) {
+                await MainActor.run {
+                    viewModel.setPickedPhotoData(data)
+                    showingCropper = viewModel.selectedImage != nil
+                }
+            }
+        } catch {
+            await MainActor.run {
+                viewModel.errorMessage = error.localizedDescription
+            }
+        }
     }
 
     private func createScannedPlant() -> PlantProfile {
