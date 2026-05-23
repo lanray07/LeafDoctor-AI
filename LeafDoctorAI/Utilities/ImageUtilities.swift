@@ -15,6 +15,7 @@ extension UIImage {
     }
 }
 
+#if os(iOS)
 struct CameraPicker: UIViewControllerRepresentable {
     @Environment(\.dismiss) private var dismiss
     var onImagePicked: (UIImage) -> Void
@@ -52,6 +53,7 @@ struct CameraPicker: UIViewControllerRepresentable {
         }
     }
 }
+#endif
 
 struct ImageCropperView: View {
     @Environment(\.dismiss) private var dismiss

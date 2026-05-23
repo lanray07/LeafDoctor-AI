@@ -30,12 +30,14 @@ struct PlantScannerView: View {
             .padding()
         }
         .background(.leafMint.opacity(0.12))
+        #if os(iOS)
         .sheet(isPresented: $showingCamera) {
             CameraPicker { image in
                 viewModel.setCameraImage(image)
                 showingCropper = true
             }
         }
+        #endif
         .sheet(isPresented: $showingCropper) {
             if let image = viewModel.selectedImage {
                 ImageCropperView(image: image) { cropped in
@@ -98,16 +100,24 @@ struct PlantScannerView: View {
                 }
                 .buttonStyle(.bordered)
 
-                Button {
-                    showingCamera = true
-                } label: {
-                    Label("Camera", systemImage: "camera.fill")
-                        .frame(maxWidth: .infinity)
-                }
-                .buttonStyle(.borderedProminent)
+                #if os(iOS)
+                cameraButton
+                #endif
             }
         }
     }
+
+    #if os(iOS)
+    private var cameraButton: some View {
+        Button {
+            showingCamera = true
+        } label: {
+            Label("Camera", systemImage: "camera.fill")
+                .frame(maxWidth: .infinity)
+        }
+        .buttonStyle(.borderedProminent)
+    }
+    #endif
 
     private var scanDetails: some View {
         VStack(alignment: .leading, spacing: 16) {
