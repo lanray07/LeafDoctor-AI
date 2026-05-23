@@ -35,6 +35,10 @@ final class SubscriptionManager: ObservableObject {
     }
 
     func purchase(_ product: Product) async {
+        #if os(visionOS)
+        _ = product
+        errorMessage = "Purchases are managed from the App Store on visionOS."
+        #else
         isLoading = true
         defer { isLoading = false }
 
@@ -53,6 +57,7 @@ final class SubscriptionManager: ObservableObject {
         } catch {
             errorMessage = error.localizedDescription
         }
+        #endif
     }
 
     func restorePurchases() async {
