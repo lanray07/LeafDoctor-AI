@@ -24,13 +24,7 @@ struct PaywallView: View {
                         isCurrent: subscriptionManager.plan == .pro,
                         actionTitle: "Choose Pro"
                     )
-                    planCard(
-                        title: "Premium",
-                        price: "£99.99 lifetime",
-                        features: ["Advanced analytics", "Custom themes", "Family/shared collection placeholder", "Greenhouse mode placeholder"],
-                        isCurrent: subscriptionManager.plan == .premium || subscriptionManager.plan == .lifetime,
-                        actionTitle: "Choose Premium"
-                    )
+                    subscriptionTerms
 
                     if let error = subscriptionManager.errorMessage {
                         Text(error)
@@ -67,12 +61,34 @@ struct PaywallView: View {
             Text("Grow healthier plants with deeper care tools.")
                 .font(.largeTitle.weight(.bold))
                 .fixedSize(horizontal: false, vertical: true)
-            Text("StoreKit 2 scaffolding is ready for App Store Connect product IDs. Prices shown are placeholders.")
+            Text("LeafDoctor Pro unlocks unlimited scans, advanced reminders, treatment plans, insights, recovery tracking, and PDF reports.")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
         }
         .padding()
         .background(LinearGradient(colors: [.leafMint, .leafTeal.opacity(0.24)], startPoint: .topLeading, endPoint: .bottomTrailing), in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+    }
+
+    private var subscriptionTerms: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Subscription information")
+                .font(.headline)
+            Text("LeafDoctor Pro Monthly renews every month at £6.99. LeafDoctor Pro Yearly renews every year at £49.99. Subscriptions renew automatically unless cancelled at least 24 hours before the end of the current period.")
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+            HStack {
+                Link("Privacy policy", destination: AppLegalLinks.privacy)
+                Spacer()
+                Link("Terms of Use (EULA)", destination: AppLegalLinks.terms)
+            }
+            .font(.footnote.weight(.semibold))
+        }
+        .padding()
+        .background(.background, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                .stroke(.secondary.opacity(0.12), lineWidth: 1)
+        )
     }
 
     private func planCard(
@@ -128,7 +144,7 @@ struct PaywallView: View {
 
     private func purchaseBestMatch(for title: String) async {
         guard !subscriptionManager.products.isEmpty else {
-            subscriptionManager.errorMessage = "StoreKit products are placeholders until configured in App Store Connect."
+            subscriptionManager.errorMessage = "Unable to load subscription products. Please try again later."
             return
         }
 
@@ -136,8 +152,6 @@ struct PaywallView: View {
         switch title {
         case "Pro":
             preferredID = subscriptionManager.yearlyProductID
-        case "Premium":
-            preferredID = subscriptionManager.lifetimeProductID
         default:
             return
         }

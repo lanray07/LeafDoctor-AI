@@ -67,12 +67,9 @@ struct SettingsView: View {
             }
 
             Section("Legal and safety") {
-                NavigationLink("Privacy policy") {
-                    LegalTextView(title: "Privacy policy", text: privacyText)
-                }
-                NavigationLink("Terms of use") {
-                    LegalTextView(title: "Terms of use", text: termsText)
-                }
+                Link("Privacy policy", destination: AppLegalLinks.privacy)
+                Link("Terms of use (EULA)", destination: AppLegalLinks.terms)
+                Link("Support", destination: AppLegalLinks.support)
                 NavigationLink("AI disclaimer") {
                     LegalTextView(title: "AI disclaimer", text: disclaimerText)
                 }
@@ -168,24 +165,6 @@ struct SettingsView: View {
         message = "All local app data was deleted."
     }
 
-    private var privacyText: String {
-        """
-        LeafDoctor AI stores plant profiles, photos, scan history, care reminders, achievements, and settings locally using SwiftData.
-
-        Mock AI mode is enabled by default. Remote AI requests should be sent only through your secure backend endpoint. Never store API keys inside the iOS app.
-
-        Camera and photo access are used only when you choose to scan or save plant photos.
-        """
-    }
-
-    private var termsText: String {
-        """
-        LeafDoctor AI is a plant care assistant and does not provide guaranteed botanical, agricultural, medical, legal, or commercial advice.
-
-        Subscriptions are scaffolded with StoreKit 2 placeholders. Configure product identifiers, pricing, terms, and entitlement handling in App Store Connect before release.
-        """
-    }
-
     private var disclaimerText: String {
         """
         AI results are informational only.
@@ -246,6 +225,7 @@ struct SettingsView: View {
         var notes: String
     }
 }
+
 
 private struct LegalTextView: View {
     let title: String

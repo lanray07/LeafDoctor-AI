@@ -15,7 +15,7 @@ final class SubscriptionManager: ObservableObject {
     let lifetimeProductID = "leafdoctor.premium.lifetime"
 
     var productIDs: [String] {
-        [monthlyProductID, yearlyProductID, lifetimeProductID]
+        [monthlyProductID, yearlyProductID]
     }
 
     var statusText: String {
@@ -30,7 +30,7 @@ final class SubscriptionManager: ObservableObject {
             products = try await Product.products(for: productIDs)
             await refreshEntitlements()
         } catch {
-            errorMessage = "StoreKit products are placeholders until configured in App Store Connect."
+            errorMessage = "Unable to load subscription products. Please try again later."
         }
     }
 
