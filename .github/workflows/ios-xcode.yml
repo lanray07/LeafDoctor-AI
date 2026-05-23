@@ -48,7 +48,7 @@ jobs:
     runs-on: macos-26
     timeout-minutes: 45
     needs: build
-    if: ${{ github.event_name == 'workflow_dispatch' && inputs.upload_testflight }}
+    if: ${{ (github.event_name == 'workflow_dispatch' && inputs.upload_testflight) || (github.event_name == 'push' && contains(github.event.head_commit.message, '[testflight]')) }}
 
     env:
       APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
