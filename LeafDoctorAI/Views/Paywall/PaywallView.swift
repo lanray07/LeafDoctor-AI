@@ -114,7 +114,8 @@ struct PaywallView: View {
                 Text(actionTitle)
                     .frame(maxWidth: .infinity)
             }
-            .buttonStyle(isCurrent ? .bordered : .borderedProminent)
+            .buttonStyle(.borderedProminent)
+            .tint(isCurrent ? .secondary : Color.leafPrimary)
             .disabled(isCurrent || title == "Free" || subscriptionManager.isLoading)
         }
         .padding()
