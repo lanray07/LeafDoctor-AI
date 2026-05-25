@@ -209,7 +209,9 @@ struct PaywallView: View {
         }
 
         if let product = subscriptionManager.products.first(where: { $0.id == preferredID }) {
-            await subscriptionManager.purchase(product, using: purchase)
+            await subscriptionManager.purchase(product) { product in
+                try await purchase(product)
+            }
         }
     }
 
@@ -224,6 +226,8 @@ struct PaywallView: View {
             return
         }
 
-        await subscriptionManager.purchase(product, using: purchase)
+        await subscriptionManager.purchase(product) { product in
+            try await purchase(product)
+        }
     }
 }

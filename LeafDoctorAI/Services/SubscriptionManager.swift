@@ -34,7 +34,7 @@ final class SubscriptionManager: ObservableObject {
         }
     }
 
-    func purchase(_ product: Product, using purchaseAction: PurchaseAction) async {
+    func purchase(_ product: Product, using purchaseAction: (Product) async throws -> Product.PurchaseResult) async {
         isLoading = true
         defer { isLoading = false }
 
