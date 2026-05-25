@@ -1,6 +1,5 @@
 import Foundation
 import StoreKit
-import SwiftUI
 
 @MainActor
 final class SubscriptionManager: ObservableObject {
