@@ -3,6 +3,7 @@ import SwiftUI
 
 struct PaywallView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.purchase) private var purchase
     @EnvironmentObject private var subscriptionManager: SubscriptionManager
 
     var body: some View {
@@ -12,18 +13,12 @@ struct PaywallView: View {
                     hero
                     planCard(
                         title: "Free",
-                        price: "£0",
+                        price: "GBP 0",
                         features: ["5 scans/month", "3 plants", "Basic reminders", "Limited history"],
                         isCurrent: !subscriptionManager.isActive,
                         actionTitle: "Current plan"
                     )
-                    planCard(
-                        title: "Pro",
-                        price: "£6.99 monthly / £49.99 yearly",
-                        features: ["Unlimited scans", "Unlimited plants", "AI treatment plans", "Advanced reminders", "Plant health insights", "PDF reports", "Recovery tracking"],
-                        isCurrent: subscriptionManager.plan == .pro,
-                        actionTitle: "Choose Pro"
-                    )
+                    proPlanCard
                     subscriptionTerms
 
                     if let error = subscriptionManager.errorMessage {
@@ -73,7 +68,7 @@ struct PaywallView: View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Subscription information")
                 .font(.headline)
-            Text("LeafDoctor Pro Monthly renews every month at £6.99. LeafDoctor Pro Yearly renews every year at £49.99. Subscriptions renew automatically unless cancelled at least 24 hours before the end of the current period.")
+            Text("LeafDoctor Pro Monthly renews every month at GBP 6.99. LeafDoctor Pro Yearly renews every year at GBP 49.99. Subscriptions renew automatically unless cancelled at least 24 hours before the end of the current period.")
                 .font(.footnote)
                 .foregroundStyle(.secondary)
             HStack {
@@ -142,6 +137,63 @@ struct PaywallView: View {
         )
     }
 
+    private var proPlanCard: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            HStack(alignment: .top) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Pro")
+                        .font(.title2.weight(.bold))
+                    Text("GBP 6.99 monthly / GBP 49.99 yearly")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+                Spacer()
+                if subscriptionManager.plan == .pro {
+                    Text("Active")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.leafPrimary)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 6)
+                        .background(.leafMint, in: Capsule())
+                }
+            }
+
+            ForEach(["Unlimited scans", "Unlimited plants", "AI treatment plans", "Advanced reminders", "Plant health insights", "PDF reports", "Recovery tracking"], id: \.self) { feature in
+                Label(feature, systemImage: "checkmark.circle.fill")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+
+            HStack(spacing: 12) {
+                purchaseButton(title: "Monthly", productID: subscriptionManager.monthlyProductID)
+                purchaseButton(title: "Yearly", productID: subscriptionManager.yearlyProductID)
+            }
+        }
+        .padding()
+        .background(.background, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                .stroke(subscriptionManager.plan == .pro ? .leafPrimary.opacity(0.5) : .secondary.opacity(0.12), lineWidth: 1)
+        )
+    }
+
+    private func purchaseButton(title: String, productID: String) -> some View {
+        Button {
+            Task { await startPurchase(productID: productID) }
+        } label: {
+            if subscriptionManager.isLoading {
+                ProgressView()
+                    .frame(maxWidth: .infinity)
+            } else {
+                Text(title)
+                    .frame(maxWidth: .infinity)
+            }
+        }
+        .buttonStyle(.borderedProminent)
+        .tint(subscriptionManager.plan == .pro ? .secondary : Color.leafPrimary)
+        .disabled(subscriptionManager.plan == .pro || subscriptionManager.isLoading)
+    }
+
     private func purchaseBestMatch(for title: String) async {
         guard !subscriptionManager.products.isEmpty else {
             subscriptionManager.errorMessage = "Unable to load subscription products. Please try again later."
@@ -157,7 +209,21 @@ struct PaywallView: View {
         }
 
         if let product = subscriptionManager.products.first(where: { $0.id == preferredID }) {
-            await subscriptionManager.purchase(product)
+            await subscriptionManager.purchase(product, using: purchase)
         }
+    }
+
+    private func startPurchase(productID: String) async {
+        guard !subscriptionManager.products.isEmpty else {
+            subscriptionManager.errorMessage = "Unable to load subscription products. Please try again later."
+            return
+        }
+
+        guard let product = subscriptionManager.products.first(where: { $0.id == productID }) else {
+            subscriptionManager.errorMessage = "This subscription is temporarily unavailable. Please try again later."
+            return
+        }
+
+        await subscriptionManager.purchase(product, using: purchase)
     }
 }

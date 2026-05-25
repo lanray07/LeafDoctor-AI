@@ -1,5 +1,6 @@
 import Foundation
 import StoreKit
+import SwiftUI
 
 @MainActor
 final class SubscriptionManager: ObservableObject {
@@ -34,16 +35,12 @@ final class SubscriptionManager: ObservableObject {
         }
     }
 
-    func purchase(_ product: Product) async {
-        #if os(visionOS)
-        _ = product
-        errorMessage = "Purchases are managed from the App Store on visionOS."
-        #else
+    func purchase(_ product: Product, using purchaseAction: PurchaseAction) async {
         isLoading = true
         defer { isLoading = false }
 
         do {
-            let result = try await product.purchase()
+            let result = try await purchaseAction(product)
             switch result {
             case .success(let verification):
                 let transaction = try checkVerified(verification)
@@ -57,7 +54,6 @@ final class SubscriptionManager: ObservableObject {
         } catch {
             errorMessage = error.localizedDescription
         }
-        #endif
     }
 
     func restorePurchases() async {
