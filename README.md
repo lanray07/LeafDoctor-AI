@@ -16,8 +16,8 @@ Open `LeafDoctorAI.xcodeproj` in Xcode, select the `LeafDoctorAI` scheme, and ru
 
 StoreKit product identifiers are placeholders:
 
-- `leafdoctor.pro.monthly`
-- `leafdoctor.pro.yearly`
+- `leafdoctor.pro.monthly2`
+- `leafdoctor.pro.yearly2`
 - `leafdoctor.premium.lifetime`
 
 Configure real products in App Store Connect before release.

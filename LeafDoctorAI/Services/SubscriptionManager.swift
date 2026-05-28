@@ -10,8 +10,8 @@ final class SubscriptionManager: ObservableObject {
     @Published var isLoading = false
     @Published var errorMessage: String?
 
-    let monthlyProductID = "leafdoctor.pro.monthly"
-    let yearlyProductID = "leafdoctor.pro.yearly"
+    let monthlyProductID = "leafdoctor.pro.monthly2"
+    let yearlyProductID = "leafdoctor.pro.yearly2"
     let lifetimeProductID = "leafdoctor.premium.lifetime"
 
     var productIDs: [String] {
