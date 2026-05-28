@@ -168,7 +168,7 @@ jobs:
             <key>uploadSymbols</key>
             <true/>
             <key>manageAppVersionAndBuildNumber</key>
-            <true/>
+            <false/>
           </dict>
           </plist>
           EOF
@@ -319,7 +319,7 @@ jobs:
             <key>uploadSymbols</key>
             <true/>
             <key>manageAppVersionAndBuildNumber</key>
-            <true/>
+            <false/>
           </dict>
           </plist>
           EOF
